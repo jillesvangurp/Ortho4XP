@@ -3,12 +3,10 @@ FROM debian:latest
 # upgrade system dependencies
 RUN apt-get update -y && apt-get upgrade -y
 # now lets install everything we need, this will take some time ...
-RUN apt-get install -y python3 python3-pip imagemagick
+
+RUN apt-get install -y python3 python3-pip imagemagick python3-gdal python3-pil  python3-pil.imagetk gimp python3-pyproj libnvtt.bin x11-apps xterm sudo
+
 RUN pip3 install requests overpy numpy
-# firefox is included here to transitively pull in a lot of the x related dependencies we'll also need for the
-# ortho4xp ui.
-RUN apt-get install -y python3-gdal python3-pil  python3-pil.imagetk gimp python3-pyproj libnvtt.bin
-RUN apt-get install -y x11-apps xterm sudo
 
 # we'll need some way to run the orthoxp gui via X windows from inside a Docker container
 # adapted from http://fabiorehm.com/blog/2014/09/11/running-gui-apps-with-docker/
@@ -37,11 +35,6 @@ CMD /usr/bin/firefox
 RUN mkdir /tmp/.X11-unix
 VOLUME ["/tmp/.X11-unix/"]
 
-# OSX specifics to run the container
-# install xquartz and start it:
-# open -a XQuartz
-# setup your environment:
-# export DISPLAY='localhost:0'
-# /usr/X11R6/bin/xhost +
-
-# docker run -ti --rm -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix <imageid> xterm
+# build the docker file
+# docker build . -t ortho
+# then use the ortho_osx.sh script to launch an xterm that opens the ortho dir
